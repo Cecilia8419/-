@@ -1,0 +1,76 @@
+描述
+
+华强是一名经验老道的劈西瓜选手。有一天华强手痒痒，想去路上的水果摊劈西瓜
+
+这条路上一共有N家店铺，每家店中都有一些西瓜。
+
+华强事先调查得知，只有当他同时劈了两家相邻店铺的西瓜时，街上的报警系统就会启动，然后老板们就会蜂拥而至。
+
+作为一向谨慎的劈西瓜选手，华强不愿意冒着被老板追捕的风险劈西瓜。
+
+他想知道，在不惊动老板的情况下，他今天最多可以劈多少西瓜？
+
+
+Input
+输入的第一行是一个整数T，表示一共有T组数据。
+
+接下来的每组数据，第一行是一个整数N，表示一共有N家店铺。
+
+第二行是N个被空格分开的正整数，表示每一家店铺中的西瓜数量。
+
+每家店铺中的西瓜数量均不超过1000。
+
+
+Output
+对于每组数据，输出一行。
+
+该行包含一个整数，表示华强在不惊动老板的情况下可以劈的西瓜数量。
+#include <stdio.h>
+#include <stdlib.h>
+
+// 辅助函数，返回两个整数中的较大值
+int max(int a, int b) {
+    return a > b ? a : b;
+}
+
+int main() {
+    int T; // 数据组数
+    scanf("%d", &T);
+
+    while (T--) {
+        int N; // 店铺数量
+        scanf("%d", &N);
+        
+        // 动态分配数组存储每家店铺的西瓜数量
+        int* watermelons = (int*)malloc((N + 1) * sizeof(int));
+        for (int i = 1; i <= N; i++) {
+            scanf("%d", &watermelons[i]);
+        }
+
+        // 如果一家店铺都没有
+        if (N == 0) {
+            printf("0\n");
+            free(watermelons);
+            continue;
+        }
+
+        // 初始化动态规划数组
+        int* dp = (int*)malloc((N + 1) * sizeof(int));
+        dp[0] = 0;
+        dp[1] = watermelons[1];
+
+        // 填充dp数组
+        for (int i = 2; i <= N; i++) {
+            dp[i] = max(dp[i-1], dp[i-2] + watermelons[i]);
+        }
+
+        // 输出结果，即前N家店铺的最大值
+        printf("%d\n", dp[N]);
+
+        // 释放动态分配的内存
+        free(watermelons);
+        free(dp);
+    }
+
+    return 0;
+}
